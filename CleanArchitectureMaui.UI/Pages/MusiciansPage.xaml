@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CleanArchitectureMaui.UI.ValueConverters"
+             xmlns:models="clr-namespace:CleanArchitectureMaui.UI.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="Musicians"
+             x:Class="CleanArchitectureMaui.UI.Pages.MusiciansPage"
+             Title="MusiciansPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:RatingToColorValueConverter x:Key="borderColor" />
+            <local:NameToImageValueConverter x:Key="nameImage" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Loaded"
+                                        Command="{ Binding UpdateMusiciansListCommand }" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Add"
+                     BindingContext="{ Binding
+                        Path=BindingContext,
+                        Source={ x:Reference Musicians }}">
+            <MenuFlyoutItem Text="Musician"
+                            Command="{ Binding CreateMusicianCommand }" />
+            <MenuFlyoutItem Text="Song"
+                            Command="{ Binding CreateSongCommand }"
+                            CommandParameter="{ Binding SelectedMusician }"/>
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="4*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="15*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Picker x:Name="MusicianPicker"
+                Title="Choose a Musician:"
+                Grid.Row="1"
+                Grid.Column="1"
+                ItemsSource="{ Binding Musicians }"
+                SelectedItem="{ Binding SelectedMusician }"
+                ItemDisplayBinding="{ Binding Name }">
+
+            <Picker.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    EventName="SelectedIndexChanged"
+                    Command="{ Binding UpdateSongsListCommand }" />
+            </Picker.Behaviors>
+        </Picker>
+
+        <Grid Grid.Row="3"
+              Grid.Column="1">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Row="0"
+                   Grid.Column="0"
+                   Source="{ Binding SelectedMusician.ImagePath }" />
+
+            <Label Grid.Row="0"
+                   Grid.Column="1"
+                   Text="{ Binding SelectedMusician.MonthListeners, StringFormat='Monthly Listeners: {0}' }"
+                   FontSize="Body"/>
+
+        </Grid>
+
+        <Label Grid.Row="4"
+               Grid.Column="1"
+               Text="Songs:" />
+
+        <CollectionView x:Name="SongsCollection"
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        ItemsSource="{ Binding Songs }" >
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="{ Binding Rating,
+                                               Converter={ StaticResource borderColor }}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="6*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{ Binding 
+                                        Source={ 
+                                            RelativeSource AncestorType={ 
+                                                x:Type models:MusiciansViewModel } },
+                                        Path=ShowDetailsCommand}"
+                                    CommandParameter="{ Binding . }">
+                                    
+                                </TapGestureRecognizer>
+                            </Grid.GestureRecognizers>
+
+                            <Image Grid.Row="0"
+                                   Grid.Column="0"
+                                   Source="{ Binding ., Converter={ StaticResource nameImage } }" />
+                            
+                            <Label Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text="{ Binding Name }"
+                                   TextColor="Black"
+                                   FontSize="Title"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+    
+</ContentPage>

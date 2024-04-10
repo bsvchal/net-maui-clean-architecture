@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CleanArchitectureMaui.UI.ValueConverters"
+             xmlns:models="clr-namespace:CleanArchitectureMaui.UI.ViewModels"
+             x:Class="CleanArchitectureMaui.UI.Pages.SongDetailsPage"
+             x:Name="Details"
+             Title="SongDetailsPage">
+    <ContentPage.MenuBarItems>
+        <MenuBarItem Text="Edit" 
+                     BindingContext="{ Binding
+                        Path=BindingContext,
+                        Source={ x:Reference Details } }" >
+            <MenuFlyoutItem Text="Rating"
+                            Command="{ Binding UpdateRatingCommand }"
+                            CommandParameter="{ Binding Song }" />
+            <MenuFlyoutItem Text="Author"
+                            Command="{ Binding UpdateAuthorCommand }"
+                            CommandParameter="{ Binding Song }" />
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:NameToImageValueConverter x:Key="songImage"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="1"
+              Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="6*" />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Row="0"
+                   Grid.Column="0"
+                   Source="{ Binding Song, 
+                             Converter={ StaticResource songImage } }"/>
+
+            <Label Grid.Row="0"
+                   Grid.Column="1"
+                   FontSize="Large"
+                   FontAttributes="Bold">
+                <Label.Text>
+                    <MultiBinding StringFormat="{} {0} by {1}">
+                        <Binding Path="Song.Name" />
+                        <Binding Path="Song.Musician.Name" />
+                    </MultiBinding>
+                </Label.Text>
+            </Label>
+        </Grid>
+
+        <Label 
+            Grid.Row="3"
+            Grid.Column="1"
+            Text="{ Binding Song.ChartPosition, StringFormat='Position in Chart: {0}/100' }" />
+
+        <Label 
+            Grid.Row="5"
+            Grid.Column="1"
+            Text="{ Binding Song.Album, StringFormat='From Album: {0}' }" />
+
+        <Label
+            Grid.Row="7"
+            Grid.Column="1"
+            Text="{ Binding Song.Rating, StringFormat='Rating: {0}/10' }" />
+
+        <Button Grid.Row="9"
+                Grid.Column="1"
+                Text="Add Image"
+                Clicked="OnImageCreateClicked"/>
+
+    </Grid>
+</ContentPage>

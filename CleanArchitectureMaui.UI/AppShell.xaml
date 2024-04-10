@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="CleanArchitectureMaui.UI.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:CleanArchitectureMaui.UI"
+    xmlns:pages="clr-namespace:CleanArchitectureMaui.UI.Pages"
+    Title="CleanArchitectureMaui.UI">
+
+    <ShellContent
+        Title="Musicians List"
+        ContentTemplate="{DataTemplate pages:MusiciansPage}"
+        Route="Musicians" />
+
+</Shell>
